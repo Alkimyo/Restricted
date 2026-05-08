@@ -489,9 +489,35 @@ async def initialize():
         forward_chat_id = await resolve_forward_chat_id(PyroConf.FORWARD_CHAT_ID)
         LOGGER(__name__).info(f"Auto-forward enabled. Target chat: {forward_chat_id}")
 
+
+from flask import Flask
+from threading import Thread
+
+# ===== KEEP ALIVE SERVER =====
+web_app = Flask(__name__)
+
+@web_app.route("/")
+def home():
+    return "Bot is running!"
+
+@web_app.route("/health")
+def health():
+    return {"status": "ok"}
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    web_app.run(host="0.0.0.0", port=port)
+
+def keep_alive():
+    t = Thread(target=run_web)
+    t.start()
+
+
+
 if __name__ == "__main__":
     try:
         LOGGER(__name__).info("Bot Started!")
+        keep_alive()
         asyncio.get_event_loop().run_until_complete(initialize())
         user.start()
         bot.run()
