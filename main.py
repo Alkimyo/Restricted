@@ -518,11 +518,14 @@ if __name__ == "__main__":
     try:
         LOGGER(__name__).info("Bot Started!")
         keep_alive()
+        print("initialize")
         asyncio.get_event_loop().run_until_complete(initialize())
         print("API_ID:", PyroConf.API_ID)
         print("SESSION:", bool(PyroConf.SESSION_STRING))
         print("SESSION LEN:", len(PyroConf.SESSION_STRING or ""))
+        print("user started")
         user.start()
+        print("bot run")
         bot.run()
     except KeyboardInterrupt:
         pass
